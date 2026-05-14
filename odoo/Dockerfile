@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-# System dependencies
 RUN apt-get update && apt-get install -y \
     git gcc g++ libpq-dev \
     libxml2-dev libxslt1-dev \
@@ -10,13 +9,18 @@ RUN apt-get update && apt-get install -y \
 
 RUN useradd -m odoo
 
+WORKDIR /opt
+
+# Clone first
+RUN git clone https://github.com/odoo/odoo --branch 18.0 --depth 1
+
+# Move into odoo directory
 WORKDIR /opt/odoo
 
+# Copy requirements
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
-
-RUN git clone https://github.com/odoo/odoo --branch 18.0 --depth 1 .
 
 USER odoo
 
